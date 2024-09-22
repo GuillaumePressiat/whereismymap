@@ -57,10 +57,11 @@ Big changes have happened in R ecosystem for maps, coming from rgeos and rgdal t
 
 ### 2. Make specific shapefiles
 
-This one can be chunked in two steps:
+This one can be chunked in three steps:
 
 - find a mapping between insee/ign codes and unit of geography which you want to map.
 - use sf and spatialEco functions tu unify INSEE shapes to your unit
+- then simplify and smooth shapes with rmapshaper and smoothr to obtain lighter map files
 
 ## Examples
 
@@ -75,4 +76,11 @@ This one can be chunked in two steps:
 
 ![Regroupment of INSEE codes by postal codes - ex:around peninsula of Crozon](docs/assets/focus_rgp_postal_crozon.png)
 
+<br>
+
+![Regroupment of INSEE codes by postal codes - ex:around Port-Saint-Louis-du-Rhône](docs/assets/focus_port_st_louis_du_rhone.png)
+
+<br>
+
+![Regroupment of INSEE codes by postal codes - ex:around Oléron and Ré](docs/assets/focus_io_ir.png)
 
