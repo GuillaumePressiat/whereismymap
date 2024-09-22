@@ -4,7 +4,7 @@ How to make specific shapefiles on the go for some french data (postal code, ATI
 
 ![A preview of Brest and the surrounding area](docs/assets/focus_brest.png)
 
-See [here](output/bretagne.pdf) for a complete file and its legend.
+See [here](outputs/bretagne.pdf) for a complete file and its legend.
 
 <br>
 
