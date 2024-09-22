@@ -3,12 +3,14 @@
 How to make specific shapefiles on the go for some french data (postal code, ATIH geo-codes or other INSEE levels) when you need it.
 
 ![A preview of Brest and the surrounding area](docs/assets/focus_brest.png)
+*A preview of Brest and the surrounding area*
 
 See [here](outputs/bretagne.pdf) for a complete file and its legend.
 
 <br>
 
 ![Regroupment of INSEE codes by postal codes - ex: Landivisiau](docs/assets/focus_rgp_postal_landivisiau.png)
+*Regroupment of INSEE codes by postal codes - ex: Landivisiau*
 
 ## Context
 
@@ -67,20 +69,24 @@ This one can be chunked in three steps:
 
 
 ![Bréhat island and surroundings](docs/assets/brehat_et_co.png)
+*Bréhat island and surroundings*
 
 <br>
 
 ![Lorient and surroundings](docs/assets/lorient_et_co.png)
+*Lorient and surroundings*
 
 <br>
 
 ![Regroupment of INSEE codes by postal codes - ex:around peninsula of Crozon](docs/assets/focus_rgp_postal_crozon.png)
+*Regroupment of INSEE codes by postal codes - ex:around peninsula of Crozon*
 
 <br>
 
-![Regroupment of INSEE codes by postal codes - ex:around Port-Saint-Louis-du-Rhône](docs/assets/focus_port_st_louis_du_rhone.png)
+![Around Port-Saint-Louis-du-Rhône](docs/assets/focus_port_st_louis_du_rhone.png)
+*Around Port-Saint-Louis-du-Rhône*
 
 <br>
 
-![Regroupment of INSEE codes by postal codes - ex:around Oléron and Ré](docs/assets/focus_io_ir.png)
-
+![Around Oléron and Ré](docs/assets/focus_io_ir.png)
+*Around Oléron and Ré*
