@@ -38,10 +38,22 @@ map2 <- map %>%
   summarise(geometry = sf::st_union(geometry, by_feature = ),
             pop_postal = sum(POPULATION),
             insee_pop = sum(POPULATION),
-            libelle_d_acheminement = libelle_d_acheminement[POPULATION == max(POPULATION)])
+            libelle_d_acheminement = libelle_d_acheminement[POPULATION == max(POPULATION)]) %>%
+  mutate(geometry_type = sf::st_geometry_type(geometry),
+         geometry_length = purrr::map_int(geometry, length))
 
 
-plot(map2)
+
+map22_s <-ms_simplify(map2, keep = 0.18)
+map22_s <- smoothr::smooth(map22_s, method = "chaikin")
+
+map22_s %>%
+  filter(grepl('^29', code_postal)) %>%
+  ggplot(data = .) +
+  geom_sf(aes(fill = insee_pop)) +
+  scico::scale_fill_scico(palette = "lajolla", direction = -1) +
+  theme_hc()
+
 
 # check if all INSEE have its postal code ?
 map2 %>% filter(is.na(code_postal))
@@ -149,4 +161,5 @@ ggplot() +
 
 
 ggsave('outputs/bretagne.pdf', width = 19, height = 11)
+
 
