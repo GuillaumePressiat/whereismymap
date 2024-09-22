@@ -1,7 +1,6 @@
 library(readr)
 library(dplyr)
 library(ggplot2)
-library(maptools)
 library(ggthemes)
 library(sf)
 library(spatialEco)
@@ -19,7 +18,7 @@ map <- sf::st_transform(map, 4326)
 map <- map %>% filter(INSEE_REG == '53')
 
 # observation : multi postal communes
-corr %>%
+corr_postal_insee %>%
   group_by(number_code_commune_insee) %>%
   mutate(nb = n_distinct(code_postal)) %>%
   arrange(desc(nb))
@@ -34,12 +33,22 @@ corr_postal_insee_reshaped <- corr_postal_insee %>%
 map <- left_join(map, corr_postal_insee_reshaped,
                  by=c('INSEE_COM' = 'number_code_commune_insee') )
 
+map2 <- map %>%
+  group_by(code_postal) %>%
+  summarise(geometry = sf::st_union(geometry, by_feature = ),
+            pop_postal = sum(POPULATION),
+            insee_pop = sum(POPULATION),
+            libelle_d_acheminement = libelle_d_acheminement[POPULATION == max(POPULATION)])
+
+
+plot(map2)
+
 # check if all INSEE have its postal code ?
-map %>% filter(is.na(code_postal))
+map2 %>% filter(is.na(code_postal))
 
 # corr$number_code_commune_insee
 map_postals <- spatialEco::sf_dissolve(map, 'code_postal')
-
+map_postals <- map2
 
 populations <- map %>%
   sf::st_drop_geometry() %>%
