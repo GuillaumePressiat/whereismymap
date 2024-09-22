@@ -11,3 +11,5 @@ raw_data/ign_admin_express
 
 
 *.DS_Store
+
+outputs/map_postal
