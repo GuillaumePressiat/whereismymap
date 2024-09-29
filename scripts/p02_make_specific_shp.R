@@ -3,7 +3,9 @@ library(dplyr)
 library(ggplot2)
 library(ggthemes)
 library(sf)
-library(spatialEco)
+library(rmapshaper)
+library(smoothr)
+#library(spatialEco)
 
 corr_postal_insee <- readr::read_csv2('raw_data/laposte_hexamal/laposte_hexamal.csv', locale = readr::locale(encoding = "latin1")) %>%
   janitor::clean_names()
@@ -35,7 +37,7 @@ map <- left_join(map, corr_postal_insee_reshaped,
 
 map2 <- map %>%
   group_by(code_postal) %>%
-  summarise(geometry = sf::st_union(geometry, by_feature = ),
+  summarise(geometry = sf::st_union(geometry, by_feature = FALSE),
             pop_postal = sum(POPULATION),
             insee_pop = sum(POPULATION),
             libelle_d_acheminement = libelle_d_acheminement[POPULATION == max(POPULATION)]) %>%
@@ -59,26 +61,32 @@ map22_s %>%
 map2 %>% filter(is.na(code_postal))
 
 # corr$number_code_commune_insee
-map_postals <- spatialEco::sf_dissolve(map, 'code_postal')
+#map_postals <- spatialEco::sf_dissolve(map, 'code_postal')
 map_postals <- map2
 
-populations <- map %>%
-  sf::st_drop_geometry() %>%
-  group_by(code_postal) %>%
-  summarise(insee_pop = sum(POPULATION),
-            libelle_d_acheminement = NOM[POPULATION == max(POPULATION)])
-
-sum(populations$insee_pop)
-
-map_postals <- map_postals %>%
-  left_join(populations, by = join_by(code_postal))
+# populations <- map %>%
+#   sf::st_drop_geometry() %>%
+#   group_by(code_postal) %>%
+#   summarise(insee_pop = sum(POPULATION),
+#             libelle_d_acheminement = NOM[POPULATION == max(POPULATION)])
+#
+# sum(populations$insee_pop)
+#
+# map_postals <- map_postals %>%
+#   left_join(populations, by = join_by(code_postal))
 
 map_postals_centroid <- sf::st_centroid(map_postals)
 
-sf::st_write(map_postals, 'outputs/map_postal/CODE_POSTAL.shp')
+sf::st_write(map_postals, 'outputs/map_postal/CODE_POSTAL.shp', append = FALSE)
 
 library(geojsonio)
 geojson_write(map_postals, file = "outputs/map_postal/postal_bretagne.geojson")
+
+
+geojson_write(map22_s %>%
+                filter(substr(code_postal,1,2) == '29') %>%
+                mutate(name = paste0(code_postal, " - ", libelle_d_acheminement)),
+              file = "outputs/map_postal/postal_finistere_light.geojson")
 
 
 map22 <- fortify(map_postals, region="code_postal")
@@ -161,5 +169,37 @@ ggplot() +
 
 
 ggsave('outputs/bretagne.pdf', width = 19, height = 11)
+
+
+
+library(echarts4r)
+
+json <- jsonlite::read_json("https://raw.githubusercontent.com/shawnbot/topogram/master/data/us-states.geojson")
+
+json <- jsonlite::read_json('outputs/map_postal/postal_finistere_light.geojson')
+
+# rownames(map_postals) <- map_postals$code_postal
+
+map_postals |>
+  # filter(substr(code_postal,1,2) == '29') |>
+  st_drop_geometry() %>%
+  filter(substr(code_postal,1,2) == '29') %>%
+  mutate(name = paste0(code_postal, " - ", libelle_d_acheminement)) %>%
+  select(name, insee_pop2 = insee_pop) |>
+  # tibble::rownames_to_column("states") |>
+  e_charts(name) |>
+  e_map_register("cp", json) |>
+  e_map(insee_pop2, map = "cp") |>
+  e_visual_map(insee_pop2) %>%
+  e_datazoom()
+
+json_u <- jsonlite::read_json("https://raw.githubusercontent.com/shawnbot/topogram/master/data/us-states.geojson")
+
+USArrests |>
+  tibble::rownames_to_column("states") |>
+  e_charts(states) |>
+  e_map_register("USA", json_u) |>
+  e_map(Murder, map = "USA") |>
+  e_visual_map(Murder)
 
 
